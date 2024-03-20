@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap 5 Website Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2%;
+    }
+
+    .text-container {
+      display: flex;
+      align-items: center;
+      margin-right: 2%;
+      max-width: 20%;
+    }
+
+    .profile-container {
+      width: 50%;
+      text-align: center;
+      background-color: #ddd;
+      padding: 2%;
+      border-radius: 2%;
+      box-sizing: border-box;
+      margin: 2%;
+    }
+
+    .profile-container img,
+    .find-friends-container img,
+    .my-friends-container img,
+    .text-container img,
+    .interests-container img {
+      max-width: 70%;
+      height: auto;
+      margin: auto;
+      display: block;
+    }
+
+    .interests-container img {
+      margin-bottom: 2%;
+    }
+
+    .clothes-container {
+      margin: auto; /* Center the container */
+    }
+
+    .clothes-item {
+      width: 500px;
+      margin: 20px;
+      padding: 30px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .clothes-item img {
+      max-width: 100%;
+      height: 300px;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+
+    .task-bar {
+      width: 100%;
+      background-color: black;
+      color: white;
+      padding: 10px 0;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000; /* Ensure the task bar stays on top */
+    }
+    
+    .banner {
+  background-color: black;
+  width: 100%;
+  padding: 20px 0;
+  text-align: left; /* Align text to the left */
+}
+
+.banner-link {
+  color: white;
+  text-decoration: none;
+  margin: 0 10px; /* Adjust margin as needed */
+}
+
+.banner-link:hover {
+  text-decoration: underline;
+}
+
+.banner img {
+  max-width: 5%;
+  height: auto;
+}
+
+  </style>
+</head>
+<body onLoad="fetchUserProfile()">
+  <div class="banner">
+    <a href="/" class="banner-link">Login</a>
+    <a href="/find-friends" class="banner-link">Find Friends</a>
+    <a href="/my-friends" class="banner-link">My Friends</a>
+    <a href="/signup" class="banner-link">Sign Up</a>
+    <img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image">
+  </div>
+  <div id="register">
+    <h2>Register</h2>
+    <p><input type="text" placeholder="Enter your name" id="registerName"></p>
+    <p><input type="text" placeholder="Enter e-mail" id="registerEmail"></p>
+    <p><input type="password" placeholder="Enter password" id="registerPassword"></p>
+    <button type="button" onclick="registerUser()">Register</button>
+</div>
+
+ 
+  <script>
+    function registerUser() {
+    const name = document.getElementById('registerName').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+
+    fetch('/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: name, email, pwd: password }), // Ensure correct keys
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Registration successful! You can now log in.');
+            document.getElementById('register').style.display = 'none';
+        } else {
+            alert('Registration failed. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error occurred during registration.');
+    });
+}
+
+    
+    function fetchUserProfile() {
+      // Fetch clothes data
+      fetch("/Users")
+        .then(response => response.json())
+        .then(data => {
+          // Display the clothes data in the "userData" div
+          displayUsers(data);
+        })
+        .catch(error => console.error('Error fetching clothes data:', error));
+    }
+
+    
+
+  </script>
+
+</body>
+</html>
