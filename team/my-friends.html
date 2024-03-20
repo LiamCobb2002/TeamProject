@@ -122,7 +122,7 @@
   </div>
   <div class="container">
     <div class="text-container">
-      <h1>Find friends</h1>
+      <h1>My friends</h1>
     </div>
     <div id="userData"></div>
     <br>
@@ -137,7 +137,7 @@
     
     function fetchUserProfile() {
       // Fetch clothes data
-      fetch("/Users")
+      fetch("/Friendships")
         .then(response => response.json())
         .then(data => {
           // Display the clothes data in the "userData" div
@@ -152,6 +152,7 @@
   clothesContainer.innerHTML = "";
 
   data.forEach(item => {
+    
     // Assigning data to the div 
     const itemDiv = document.createElement("div");
     itemDiv.classList.add("clothes-item");
@@ -177,12 +178,7 @@
     imageElement.alt = item.username;
 
     // Button for adding to basket
-    const addButton = document.createElement("button");
-    addButton.textContent = "Add";
-    addButton.classList.add("ms-2"); // Add the ms-2 class for left margin
-    addButton.addEventListener("click", () => addFriend(item.userid));
     
-
     // Add elements to div
     itemDiv.appendChild(titleElement);
     itemDiv.appendChild(priceElement);
@@ -238,32 +234,12 @@
       itemDiv.appendChild(basketballImage);
     }
 
-    itemDiv.appendChild(addButton);
+    
 
 
 
     clothesContainer.appendChild(itemDiv);
   });
-
-  function addFriend(friendId) {
-  // Send a POST request to create a friendship
-  fetch("/add-friend", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ friendId: friendId })
-  })
-  .then(response => {
-    if (response.ok) {
-      // If friendship creation is successful, fetch the updated user data
-      fetchUserProfile();
-    } else {
-      console.error("Failed to add friend");
-    }
-  })
-  .catch(error => console.error("Error adding friend:", error));
-}
 }
 
   </script>
