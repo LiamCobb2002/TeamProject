@@ -89,44 +89,44 @@
     }
     
     .banner {
-  background-color: #0C65D1;
-  width: 100%;
-  padding: 20px 0;
-  text-align: left; /* Align text to the left */
-}
+      background-color: #0C65D1;
+      width: 100%;
+      padding: 20px 0;
+      text-align: left; /* Align text to the left */
+    }
 
-.banner-link {
-  color: white;
-  text-decoration: none;
-  margin: 0 10px; /* Adjust margin as needed */
-}
+    .banner-link {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px; /* Adjust margin as needed */
+    }
 
-.banner-link:hover {
-  text-decoration: underline;
-}
+    .banner-link:hover {
+      text-decoration: underline;
+    }
 
-.banner img {
-  max-width: 5%;
-  height: auto;
-}
+    .banner img {
+      max-width: 5%;
+      height: auto;
+    }
 
   </style>
 </head>
-<body onLoad="fetchUserProfile()">
+
+<body onload="fetchUserProfile()">
   <div class="banner">
-    <div class="banner">
-      <a href="/login" class="banner-link">Login</a>
-      <a href="/signup" class="banner-link">Sign Up</a>
-      <a href="/" class="banner-link">Home</a>
-      <a href="/find-friends" class="banner-link">Find Friends</a>
-      <a href="/my-friends" class="banner-link">My Friends</a>
-      
-      <img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image">
-    </div>
+    <a href="/login" class="banner-link">Login</a>
+    <a href="/signup" class="banner-link">Sign Up</a>
+    <a href="/" class="banner-link">Home</a>
+    <a href="/find-friends" class="banner-link">Find Friends</a>
+    <a href="/my-friends" class="banner-link">My Friends</a>
+    <img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image">
   </div>
+
+
   <div class="container">
     <div class="text-container">
-      <h1>Find friends</h1>
+      <h1>My Profile</h1>
     </div>
     <div id="userData"></div>
     <br>
@@ -135,13 +135,71 @@
     </div>
   </div>
 
- 
+
+  <div id="register">
+    <h2>Update</h2>
+    <p><input type="text" placeholder="Username" id="registerUsername"></p>
+    <p><input type="text" placeholder="E-mail" id="registerEmail"></p>
+    <p><input type="password" placeholder="Password" id="registerPassword"></p>
+    <p><input type="number" placeholder="Age" id="registerAge"></p>
+    <p>
+      <select id="registerGender">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+    </p>
+    <p><input type="text" placeholder="Enter your location" id="registerLocation"></p>
+    <button type="button" onclick="updateUser()">Update</button>
+  </div>
+  
   <script>
-    
-    
+    async function updateUser() {
+      const username = document.getElementById('registerUsername').value;
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+      const age = document.getElementById('registerAge').value;
+      const gender = document.getElementById('registerGender').value;
+      const location = document.getElementById('registerLocation').value;
+
+      if (username.trim() === '' || email.trim() === '' || password.trim() === '' || age.trim() === '' || location.trim() === '') {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      try {
+        const response = await fetch("/update-profile", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username,
+            email,
+            password,
+            age,
+            gender,
+            location
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert('Profile updated successfully!');
+          // Optionally, redirect the user to another page or update UI
+        } else {
+          alert('Failed to update profile. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error updating profile:', error);
+        alert('Error updating profile. Please try again.');
+      }
+    }
+
     function fetchUserProfile() {
       // Fetch clothes data
-      fetch("/Users")
+      fetch("/user-profile")
         .then(response => response.json())
         .then(data => {
           // Display the clothes data in the "userData" div
@@ -156,6 +214,7 @@
   clothesContainer.innerHTML = "";
 
   data.forEach(item => {
+    
     // Assigning data to the div 
     const itemDiv = document.createElement("div");
     itemDiv.classList.add("clothes-item");
@@ -181,12 +240,7 @@
     imageElement.alt = item.username;
 
     // Button for adding to basket
-    const addButton = document.createElement("button");
-    addButton.textContent = "Add";
-    addButton.classList.add("ms-2"); // Add the ms-2 class for left margin
-    addButton.addEventListener("click", () => addFriend(item.userid));
     
-
     // Add elements to div
     itemDiv.appendChild(titleElement);
     itemDiv.appendChild(priceElement);
@@ -242,35 +296,14 @@
       itemDiv.appendChild(basketballImage);
     }
 
-    itemDiv.appendChild(addButton);
+    
 
 
 
     clothesContainer.appendChild(itemDiv);
   });
-
-  function addFriend(friendId) {
-  // Send a POST request to create a friendship
-  fetch("/add-friend", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ friendId: friendId })
-  })
-  .then(response => {
-    if (response.ok) {
-      // If friendship creation is successful, fetch the updated user data
-      fetchUserProfile();
-    } else {
-      console.error("Failed to add friend");
-    }
-  })
-  .catch(error => console.error("Error adding friend:", error));
-}
 }
 
   </script>
-
 </body>
 </html>

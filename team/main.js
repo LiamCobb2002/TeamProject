@@ -47,6 +47,10 @@ function startServer() {
         res.sendFile(path.join(__dirname, "find-friends.html"));
     });
 
+    app.get("/", function (req, res) {
+        res.sendFile(path.join(__dirname, "home.html"));
+    });
+
     app.get("/my-friends", authenticateUser, function (req, res) {
         res.sendFile(path.join(__dirname, "my-friends.html"));
     });
@@ -55,8 +59,12 @@ function startServer() {
         res.sendFile(path.join(__dirname, "SignUp.html"));
       });
 
-      app.get("/", function (req, res) {
+    app.get("/login", function (req, res) {
         res.sendFile(path.join(__dirname, "login.html"));
+      });
+
+    app.get("/my-profile", function (req, res) {
+        res.sendFile(path.join(__dirname, "my-profile.html"));
       });
 
       function authenticateUser(req, res, next) {
@@ -143,20 +151,29 @@ function startServer() {
 
     app.post("/register", async function (req, res) {
         try {
-            const { username, email, pwd } = req.body;
+            const { username, email, pwd, age, gender, location } = req.body; // Extract username, email, password, age, gender, and location from the request body
             const client = await pool.connect();
+            
+            // Insert user information into the userlogin table
             const result = await client.query(
                 "INSERT INTO userlogin(username, email, pwd) VALUES ($1, $2, $3) RETURNING *",
                 [username, email, pwd]
             );
+    
+            // Insert additional user information into the userprofile table
+            await client.query(
+                "INSERT INTO userprofile(userid, uage, gender, ulocation) VALUES ($1, $2, $3, $4)",
+                [result.rows[0].userid, age, gender, location]
+            );
+            
             client.release();
-            const newItem = result.rows[0];
             res.json({ success: true }); // Send success response
         } catch (err) {
             console.error("Error adding new User:", err);
             res.status(500).send("Internal Server Error");
         }
     });
+    
 
     app.post("/login", async function (req, res) {
         try {
@@ -202,6 +219,58 @@ function startServer() {
           res.status(500).send("Internal Server Error");
         }
       });
+
+        // Update user profile route
+        app.post("/update-profile", authenticateUser, async function (req, res) {
+            try {
+                const { username, email, password, age, gender, location } = req.body; // Modified line
+                const client = await pool.connect();
+                
+                // Update user profile information in the userlogin table
+                await client.query(
+                    `UPDATE userlogin 
+                    SET username = $1, email = $2, pwd = $3
+                    WHERE userid = $4`,
+                    [username, email, password, req.session.userid]
+                );
+        
+                // Update additional user information in the userprofile table
+                await client.query(
+                    `UPDATE userprofile 
+                    SET uage = $1, gender = $2, ulocation = $3
+                    WHERE userid = $4`,
+                    [age, gender, location, req.session.userid]
+                );
+                
+                client.release();
+                res.json({ success: true, message: "Profile updated successfully!" });
+            } catch (err) {
+                console.error("Error updating user profile:", err);
+                res.status(500).send("Internal Server Error");
+            }
+        });
+        
+        app.get("/user-profile", authenticateUser, async function (req, res) {
+            try {
+                const client = await pool.connect();
+                const result = await client.query(
+                    `SELECT profilepicture, gender, username, uage, interestname, ulocation 
+                    FROM userprofile 
+                    JOIN UserInterest USING (userid) 
+                    JOIN interest USING (interestid) 
+                    JOIN userlogin USING (userid) 
+                    WHERE userprofile.userid = $1;`,
+                    [req.session.userid]
+                );
+                const users = result.rows;
+                client.release();
+                res.send(users);
+            } catch (err) {
+                console.error("Error fetching users data:", err);
+                res.status(500).send(err);
+            }
+        });
+        
     
     
 

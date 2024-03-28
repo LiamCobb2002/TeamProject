@@ -89,7 +89,7 @@
     }
     
     .banner {
-  background-color: black;
+  background-color: #0C65D1;
   width: 100%;
   padding: 20px 0;
   text-align: left; /* Align text to the left */
@@ -114,50 +114,76 @@
 </head>
 <body onLoad="fetchUserProfile()">
   <div class="banner">
-    <a href="/" class="banner-link">Login</a>
+    <a href="/login" class="banner-link">Login</a>
+    <a href="/signup" class="banner-link">Sign Up</a>
+    <a href="/" class="banner-link">Home</a>
     <a href="/find-friends" class="banner-link">Find Friends</a>
     <a href="/my-friends" class="banner-link">My Friends</a>
-    <a href="/signup" class="banner-link">Sign Up</a>
+    
     <img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image">
   </div>
   <div id="register">
     <h2>Register</h2>
-    <p><input type="text" placeholder="Enter your name" id="registerName"></p>
-    <p><input type="text" placeholder="Enter e-mail" id="registerEmail"></p>
-    <p><input type="password" placeholder="Enter password" id="registerPassword"></p>
+    <p><input type="text" placeholder="Name" id="registerName"></p>
+    <p><input type="text" placeholder="E-mail" id="registerEmail"></p>
+    <p><input type="password" placeholder="Password" id="registerPassword"></p>
+    <p><input type="number" placeholder="Age" id="registerAge"></p>
+    <p>
+      <select id="registerGender">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+    </p>
+    <p><input type="text" placeholder="Enter your location" id="registerLocation"></p>
     <button type="button" onclick="registerUser()">Register</button>
-</div>
-
+  </div>
  
   <script>
     function registerUser() {
-    const name = document.getElementById('registerName').value;
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
+  const name = document.getElementById('registerName').value;
+  const email = document.getElementById('registerEmail').value;
+  const password = document.getElementById('registerPassword').value;
+  const age = document.getElementById('registerAge').value;
+  const gender = document.getElementById('registerGender').value;
+  const location = document.getElementById('registerLocation').value;
 
-    fetch('/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username: name, email, pwd: password }), // Ensure correct keys
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Registration successful! You can now log in.');
-            document.getElementById('register').style.display = 'none';
-        } else {
-            alert('Registration failed. Please try again.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error occurred during registration.');
-    });
+  // Check if all fields are filled in
+  if (name.trim() === '' || email.trim() === '' || password.trim() === '' || age.trim() === '' || location.trim() === '') {
+    alert('Please fill in all fields.');
+    return; // Stop execution if any field is empty
+  }
+
+  fetch('/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ 
+      username: name, 
+      email, 
+      pwd: password,
+      age,
+      gender,
+      location
+    }), // Include age, gender, and location in the payload
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert('Registration successful! You can now log in.');
+      document.getElementById('register').style.display = 'none';
+    } else {
+      alert('Registration failed. Please try again.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Error occurred during registration.');
+  });
 }
 
-    
+
     function fetchUserProfile() {
       // Fetch clothes data
       fetch("/Users")

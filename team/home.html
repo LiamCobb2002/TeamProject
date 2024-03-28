@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap 5 Website Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+  display: flex;
+  flex-wrap: wrap; /* Allow containers to wrap to the next line if necessary */
+  justify-content: center; /* Horizontally center the containers */
+  margin-top: 2%;
+}
+
+.profile-container, .find-friends-container, .my-friends-container {
+  width: calc(33.33% - 20px); /* Set width to approximately one-third of the viewport width with some margin */
+  text-align: center;
+  background-color: #ddd;
+  padding: 2%;
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin: 10px; /* Add some margin between containers */
+}
+    .profile-container img,
+.find-friends-container img,
+.my-friends-container img {
+  max-width: 50%; /* Adjust the maximum width as needed */
+  height: auto;
+  margin: auto;
+  display: block;
+}
+
+    .interests-container img {
+      margin-bottom: 2%;
+    }
+
+    .clothes-container {
+      margin: auto; /* Center the container */
+    }
+
+    .clothes-item {
+      width: 500px;
+      margin: 20px;
+      padding: 30px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .clothes-item img {
+      max-width: 100%;
+      height: 300px;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+
+    .task-bar {
+      width: 100%;
+      background-color: black;
+      color: white;
+      padding: 10px 0;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000; /* Ensure the task bar stays on top */
+    }
+    
+    .banner {
+      background-color: #0C65D1;
+      width: 100%;
+      padding: 20px 0;
+      text-align: left; /* Align text to the left */
+    }
+
+    .banner-link {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px; /* Adjust margin as needed */
+    }
+
+    .banner-link:hover {
+      text-decoration: underline;
+    }
+
+    .banner img {
+      max-width: 5%;
+      height: auto;
+    }
+
+    /* Add this CSS to make the "My Friends" and "Find Friends" links black */
+    .my-friends-container h1 a,
+    .find-friends-container h1 a {
+      color: black;
+      text-decoration: none;
+    }
+
+  </style>
+</head>
+<body onLoad="fetchUserProfile()">
+  <div class="banner">
+    <a href="/login" class="banner-link">Login</a>
+    <a href="/signup" class="banner-link">Sign Up</a>
+    <a href="/" class="banner-link">Home</a>
+    <a href="/find-friends" class="banner-link">Find Friends</a>
+    <a href="/my-friends" class="banner-link">My Friends</a>
+    
+    <img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image">
+  </div>
+  
+  <h1>Home</h1>
+  
+  <div class="profile-container">
+    <h1>My Profile</h1>
+    <img src="/public/noun-user-318556.png" alt="Banner Image">
+  </div>
+
+  <div class="find-friends-container">
+    <h1><a href="/find-friends">Find Friends</a></h1>
+    <a href="/find-friends"><img src="/public/noun-together-4464212.png" alt="Banner Image"></a>
+  </div>
+
+  <div class="my-friends-container">
+    <h1><a href="/my-friends">My Friends</a></h1>
+    <a href="/my-friends"><img src="/public/noun-magnifying-glass-102783.png" alt="Banner Image"></a>
+  </div>
+</body>
+</html>
