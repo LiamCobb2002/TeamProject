@@ -136,13 +136,17 @@
 </head>
 <body onLoad="fetchUserProfile()">
   <div class="banner">
-    <a href="/login" class="banner-link">Login</a>
-    <a href="/signup" class="banner-link">Sign Up</a>
-    <a href="/"><img src="/public/noun-home-button-5998979-FFFFFF.png" alt="Banner Image"></a>
-    <a href="/my-profile"><img src="/public/noun-user-318556-FFFFFF.png" alt="Banner Image"></a>
-    <a href="/find-friends"><img src="/public/noun-magnifying-glass-69142-FFFFFF.png" alt="Banner Image"></a>
-    <a href="/my-friends"><img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image"></a>
+    <div class="banner">
+      <a href="/login" class="banner-link">Login</a>
+      <a href="/signup" class="banner-link">Sign Up</a>
+      <a href="/" class="banner-link">Home</a>
+      <a href="/find-friends" class="banner-link">Find Friends</a>
+      <a href="/my-friends" class="banner-link">My Friends</a>
+      
+      <img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image">
+    </div>
   </div>
+
   <div class="hobbies-wrapper">
     <h1>Filter Hobbies</h1>
   <div class="image-container">
@@ -152,7 +156,7 @@
     <img src="/public/noun-guitar-6652436.png" alt="Guitar" onclick="addInterest('Guitar')">
     <img src="/public/noun-pizza-6669822.png" alt="Food" onclick="addInterest('Food')">
     <img src="/public/noun-running-20027.png" alt="Running" onclick="addInterest('Running')">
-    <img src="/public/noun-martial-arts-6118456.png" alt="Taekwondo" onclick="addInterest('Taekwondo')">
+    <img src="/public/noun-martial-arts-6118456.png" alt="Taekwando" onclick="addInterest('Taekwondo')">
     <img src="/public/noun-movie-6682539.png" alt="Movies" onclick="addInterest('Movies')">
     <img src="/public/noun-bodhran-drum-5515941.png" alt="Bodhran" onclick="addInterest('Bodhran')">
   </div>
@@ -191,13 +195,9 @@ function displayUsers(data) {
   // Group users by user ID
   const usersMap = new Map();
   data.forEach(item => {
-
-    
-
     if (!usersMap.has(item.userid)) {
       // Initialize user entry if it doesn't exist
       usersMap.set(item.userid, {
-        id: item.userid,
         username: item.username,
         uage: item.uage,
         gender: item.gender,
@@ -243,22 +243,91 @@ function displayUsers(data) {
       itemDiv.appendChild(interestsElement);
       itemDiv.appendChild(imageElement);
 
-      user.interests.forEach(interest => {
-          createInterestImage(user, interest, itemDiv);
-        });
+      // Conditionally add basketball image if 'basketball' is in interests
+    if (user.interests.includes('Basketball')) {
+      const basketballImage = document.createElement("img");
+      basketballImage.src = "/public/noun-basketball-6548861.png";
+      basketballImage.alt = "Basketball";
+      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
+      basketballImage.style.marginRight = "5px"; // Adjust styling if necessary
+      itemDiv.appendChild(basketballImage);
+    }
 
-      // Add button to add friend
+    if (user.interests.includes('Food')) {
+      const basketballImage = document.createElement("img");
+      basketballImage.src = "/public/noun-pizza-6669822.png";
+      basketballImage.alt = "Food";
+      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
+      basketballImage.style.marginRight = "5px"; // Adjust styling if necessary
+      itemDiv.appendChild(basketballImage);
+    }
+
+    if (user.interests.includes('TV')) {
+      const basketballImage = document.createElement("img");
+      basketballImage.src = "/public/noun-tv-1004016.png";
+      basketballImage.alt = "TV";
+      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
+      basketballImage.style.marginRight = "5px"; // Adjust styling if necessary
+      itemDiv.appendChild(basketballImage);
+    }
+
+    if (user.interests.includes('Guitar')) {
+      const basketballImage = document.createElement("img");
+      basketballImage.src = "/public/noun-guitar-6652436.png";
+      basketballImage.alt = "Guitar";
+      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
+      basketballImage.style.marginRight = "5px"; // Adjust styling if necessary
+      itemDiv.appendChild(basketballImage);
+    }
+
+    if (user.interests.includes('Running')) {
+      const basketballImage = document.createElement("img");
+      basketballImage.src = "/public/noun-running-20027.png";
+      basketballImage.alt = "Running";
+      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
+      basketballImage.style.marginRight = "5px"; // Adjust styling if necessary
+      itemDiv.appendChild(basketballImage);
+    }
+
+    if (user.interests.includes('Taekwondo')) {
+      const basketballImage = document.createElement("img");
+      basketballImage.src = "/public/noun-martial-arts-6118456.png";
+      basketballImage.alt = "Taekwondo";
+      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
+      basketballImage.style.marginRight = "5px"; // Adjust styling if necessary
+      itemDiv.appendChild(basketballImage);
+    }
+
+    if (user.interests.includes('Movies')) {
+      const basketballImage = document.createElement("img");
+      basketballImage.src = "/public/noun-movie-6682539.png";
+      basketballImage.alt = "Movies";
+      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
+      basketballImage.style.marginRight = "5px"; // Adjust styling if necessary
+      itemDiv.appendChild(basketballImage);
+    }
+
+    if (user.interests.includes('Bodhran')) {
+      const basketballImage = document.createElement("img");
+      basketballImage.src = "/public/noun-bodhran-drum-5515941.png";
+      basketballImage.alt = "Bodhran";
+      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
+      basketballImage.style.marginRight = "5px"; // Adjust styling if necessary
+      itemDiv.appendChild(basketballImage);
+    }
+
       const addButton = document.createElement("button");
-      addButton.textContent = "Add";
-      addButton.classList.add("ms-2"); // Add the ms-2 class for left margin
-      addButton.addEventListener("click", () => addFriend(user.id));
-      itemDiv.appendChild(addButton);
+    addButton.textContent = "Add";
+    addButton.classList.add("ms-2"); // Add the ms-2 class for left margin
+    addButton.addEventListener("click", () => addFriend(item.userid));
 
-      
+    
+    itemDiv.appendChild(addButton);
+
       clothesContainer.appendChild(itemDiv);
     }
   });
-
+}
 
 function addFriend(friendId) {
   // Send a POST request to create a friendship
@@ -279,55 +348,9 @@ function addFriend(friendId) {
   })
   .catch(error => console.error("Error adding friend:", error));
 }
-}
 
-function createInterestImage(user, interest, container) {
-    // Check if the container already contains an image with the same interest
-    if (container.querySelector(`img[alt="${interest}"]`)) {
-        return; // If an image with the same interest exists, return without adding a new one
-    }
 
-    // Create image element based on the interest
-    const image = document.createElement("img");
-    image.alt = interest;
-    image.style.maxHeight = "10%"; // Adjust styling if necessary
-    image.style.marginRight = "5px"; // Adjust styling if necessary
 
-    // Set the source of the image based on the interest
-    switch(interest) {
-        case 'Basketball':
-            image.src = "/public/noun-basketball-6548861.png";
-            break;
-        case 'Food':
-            image.src = "/public/noun-pizza-6669822.png";
-            break;
-        case 'TV':
-            image.src = "/public/noun-tv-1004016.png";
-            break;
-        case 'Guitar':
-            image.src = "/public/noun-guitar-6652436.png";
-            break;
-        case 'Running':
-            image.src = "/public/noun-running-20027.png";
-            break;
-        case 'Taekwondo':
-            image.src = "/public/noun-martial-arts-6118456.png";
-            break;
-        case 'Movies':
-            image.src = "/public/noun-movie-6682539.png";
-            break;
-        case 'Bodhran':
-            image.src = "/public/noun-bodhran-drum-5515941.png";
-            break;
-        // Add cases for other interests here
-        default:
-            // Handle default case or unknown interests
-            break;
-    }
-
-    // Append the image to the container
-    container.appendChild(image);
-}
 function addInterest(interest) {
   // Clear the selectedHobbies array
   selectedHobbies = [];
@@ -335,41 +358,17 @@ function addInterest(interest) {
   // Add the newly selected interest to the array
   selectedHobbies.push(interest.toLowerCase());
 
-  // Remove the highlight from all images
-  const allImages = document.querySelectorAll('.image-container img');
-  allImages.forEach(img => {
-    img.style.border = 'none';
-    // Remove any existing 'selected' class
-    img.classList.remove('selected');
-  });
-
-  // Highlight the selected image
-  const selectedImage = document.querySelector(`.image-container img[alt="${interest}"]`);
-  if (selectedImage) {
-    selectedImage.style.border = '2px solid #0C65D1'; // Change border color as needed
-    // Optionally, add a 'selected' class to apply additional styles
-    selectedImage.classList.add('selected');
-  }
-
   // Refresh user profiles based on the selected hobby
   fetchUserProfile();
 }
 
 function showAllUsers() {
-  // Clear the selectedHobbies array
-  selectedHobbies = [];
+      // Clear the selectedHobbies array
+      selectedHobbies = [];
 
-  // Remove the highlight from all images
-  const allImages = document.querySelectorAll('.image-container img');
-  allImages.forEach(img => {
-    img.style.border = 'none';
-    // Remove any existing 'selected' class
-    img.classList.remove('selected');
-  });
-
-  // Fetch all users
-  fetchUserProfile();
-}
+      // Fetch all users
+      fetchUserProfile();
+    }
 
   </script>
 

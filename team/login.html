@@ -116,11 +116,10 @@
   <div class="banner">
     <a href="/login" class="banner-link">Login</a>
     <a href="/signup" class="banner-link">Sign Up</a>
-    <a href="/" class="banner-link">Home</a>
-    <a href="/find-friends" class="banner-link">Find Friends</a>
-    <a href="/my-friends" class="banner-link">My Friends</a>
-    
-    <img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image">
+    <a href="/"><img src="/public/noun-home-button-5998979-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/my-profile"><img src="/public/noun-user-318556-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/find-friends"><img src="/public/noun-magnifying-glass-69142-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/my-friends"><img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image"></a>
   </div>
   <div id="register">
     <h2>Login</h2>
@@ -135,7 +134,12 @@
         </div>
         <button type="submit">Login</button>
     </form>
+
+    <br>
+    <p>New user? Sign up <a href="/signup">here</a></p>
 </div>
+
+
 
  
 <script>
@@ -162,7 +166,7 @@
 
           if (responseData.success) {
               alert(responseData.message);
-              window.location.href = "/find-friends"; // Redirect to home page on successful login
+              window.location.href = "/"; // Redirect to home page on successful login
           } else {
               alert(responseData.message);
           }

@@ -116,14 +116,13 @@
   <div class="banner">
     <a href="/login" class="banner-link">Login</a>
     <a href="/signup" class="banner-link">Sign Up</a>
-    <a href="/" class="banner-link">Home</a>
-    <a href="/find-friends" class="banner-link">Find Friends</a>
-    <a href="/my-friends" class="banner-link">My Friends</a>
-    
-    <img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image">
+    <a href="/"><img src="/public/noun-home-button-5998979-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/my-profile"><img src="/public/noun-user-318556-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/find-friends"><img src="/public/noun-magnifying-glass-69142-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/my-friends"><img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image"></a>
   </div>
   <div id="register">
-    <h2>Register</h2>
+    <h2>Sign up</h2>
     <p><input type="text" placeholder="Name" id="registerName"></p>
     <p><input type="text" placeholder="E-mail" id="registerEmail"></p>
     <p><input type="password" placeholder="Password" id="registerPassword"></p>
@@ -173,6 +172,7 @@
     if (data.success) {
       alert('Registration successful! You can now log in.');
       document.getElementById('register').style.display = 'none';
+      window.location.href = "/login";
     } else {
       alert('Registration failed. Please try again.');
     }

@@ -100,6 +100,7 @@
     }
 
     /* Add this CSS to make the "My Friends" and "Find Friends" links black */
+    .profile-container h1 a,
     .my-friends-container h1 a,
     .find-friends-container h1 a {
       color: black;
@@ -112,28 +113,26 @@
   <div class="banner">
     <a href="/login" class="banner-link">Login</a>
     <a href="/signup" class="banner-link">Sign Up</a>
-    <a href="/" class="banner-link">Home</a>
-    <a href="/find-friends" class="banner-link">Find Friends</a>
-    <a href="/my-friends" class="banner-link">My Friends</a>
-    
-    <img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image">
+    <a href="/"><img src="/public/noun-home-button-5998979-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/my-profile"><img src="/public/noun-user-318556-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/find-friends"><img src="/public/noun-magnifying-glass-69142-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/my-friends"><img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image"></a>
   </div>
-  
   <h1>Home</h1>
   
   <div class="profile-container">
-    <h1>My Profile</h1>
-    <img src="/public/noun-user-318556.png" alt="Banner Image">
+    <h1><a href="/my-profile">My Profile</a></h1>
+    <a href="/my-profile"><img src="/public/noun-user-318556.png" alt="Banner Image"></a>
   </div>
 
   <div class="find-friends-container">
     <h1><a href="/find-friends">Find Friends</a></h1>
-    <a href="/find-friends"><img src="/public/noun-together-4464212.png" alt="Banner Image"></a>
+    <a href="/find-friends"><img src="/public/noun-magnifying-glass-102783.png" alt="Banner Image"></a>
   </div>
 
   <div class="my-friends-container">
     <h1><a href="/my-friends">My Friends</a></h1>
-    <a href="/my-friends"><img src="/public/noun-magnifying-glass-102783.png" alt="Banner Image"></a>
+    <a href="/my-friends"><img src="/public/noun-together-4464212.png" alt="Banner Image"></a>
   </div>
 </body>
 </html>

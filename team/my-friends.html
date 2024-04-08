@@ -112,15 +112,14 @@
 
   </style>
 </head>
-<body onLoad="fetchUserProfile()">
+<body onLoad="fetchUserProfile(); fetchRequests();">
   <div class="banner">
     <a href="/login" class="banner-link">Login</a>
     <a href="/signup" class="banner-link">Sign Up</a>
-    <a href="/" class="banner-link">Home</a>
-    <a href="/find-friends" class="banner-link">Find Friends</a>
-    <a href="/my-friends" class="banner-link">My Friends</a>
-    
-    <img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image">
+    <a href="/"><img src="/public/noun-home-button-5998979-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/my-profile"><img src="/public/noun-user-318556-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/find-friends"><img src="/public/noun-magnifying-glass-69142-FFFFFF.png" alt="Banner Image"></a>
+    <a href="/my-friends"><img src="/public/noun-together-4464212-FFFFFF.png" alt="Banner Image"></a>
   </div>
   <div class="container">
     <div class="text-container">
@@ -131,6 +130,13 @@
     <div class="clothes-container" id="clothesContainer">
       <!-- clothing items will be displayed here dynamically -->
     </div>
+
+    <div class="text-container">
+      <h1>Requested Friends</h1>
+    </div>
+    <div id="requestedFriends"></div>
+
+    
   </div>
 
  
@@ -148,100 +154,223 @@
         .catch(error => console.error('Error fetching clothes data:', error));
     }
 
+    function fetchRequests() {
+  fetch("/requests")
+    .then(response => response.json())
+    .then(data => {
+      displayRequestedFriends(data);
+    })
+    .catch(error => console.error('Error fetching requested friends:', error));
+}
+
     function displayUsers(data) {
-  // Display clothes 
+  // Display users
   const clothesContainer = document.getElementById("clothesContainer");
   clothesContainer.innerHTML = "";
 
+  // Group users by user ID
+  const usersMap = new Map();
   data.forEach(item => {
-    
-    // Assigning data to the div 
+    if (!usersMap.has(item.userid)) {
+      // Initialize user entry if it doesn't exist
+      usersMap.set(item.userid, {
+        username: item.username,
+        uage: item.uage,
+        gender: item.gender,
+        ulocation: item.ulocation,
+        profilepicture: item.profilepicture,
+        interests: [] // Initialize interests array for the user
+      });
+    }
+    // Add interest to user's interests array
+    usersMap.get(item.userid).interests.push(item.interestname);
+  });
+
+  // Iterate over grouped users and create containers
+  usersMap.forEach(user => {
     const itemDiv = document.createElement("div");
     itemDiv.classList.add("clothes-item");
 
-    // Create elements based on the parameters of the second function
     const titleElement = document.createElement("h3");
-    titleElement.textContent = item.username; // Use 'username' as an example
+    titleElement.textContent = user.username;
 
-    const priceElement = document.createElement("p");
-    priceElement.textContent = "Age: " + item.uage; // Use 'uage' as an example
+    const ageElement = document.createElement("p");
+    ageElement.textContent = "Age: " + user.uage;
 
-    const descriptionElement = document.createElement("p");
-    descriptionElement.textContent = "Gender: " + item.gender; // Use 'gender' as an example
-
-    const interestElement = document.createElement("p");
-    interestElement.textContent = "Interest: " + item.interestname; // Update to interestname
+    const genderElement = document.createElement("p");
+    genderElement.textContent = "Gender: " + user.gender;
 
     const locationElement = document.createElement("p");
-    locationElement.textContent = "From: " + item.ulocation; // Update to interestname
+    locationElement.textContent = "From: " + user.ulocation;
+
+    const interestsElement = document.createElement("p");
+    interestsElement.textContent = "Interests: " + user.interests.join(", ");
 
     const imageElement = document.createElement("img");
-    imageElement.src = item.profilepicture || "path_to_default_image"; // Use 'profilepicture' as an example
-    imageElement.alt = item.username;
+    imageElement.src = user.profilepicture || "path_to_default_image";
+    imageElement.alt = user.username;
 
-    // Button for adding to basket
-    
-    // Add elements to div
     itemDiv.appendChild(titleElement);
-    itemDiv.appendChild(priceElement);
-    itemDiv.appendChild(descriptionElement);
+    itemDiv.appendChild(ageElement);
+    itemDiv.appendChild(genderElement);
     itemDiv.appendChild(locationElement);
-    
+    itemDiv.appendChild(interestsElement);
     itemDiv.appendChild(imageElement);
-    
 
-    // Conditionally add basketball image if interest is basketball
-    if (item.interestname.toLowerCase() === "basketball") {
-      const basketballImage = document.createElement("img");
-      basketballImage.src = "/public/noun-basketball-6548861.png"; // Provide the correct path
-      basketballImage.alt = "Basketball";
-      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
-      basketballImage.style.margin = "auto";
-      itemDiv.appendChild(basketballImage);
-    }
-
-    else if (item.interestname.toLowerCase() === "tv") {
-      const basketballImage = document.createElement("img");
-      basketballImage.src = "/public/noun-tv-1004016.png"; // Provide the correct path
-      basketballImage.alt = "TV";
-      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
-      basketballImage.style.margin = "auto";
-      itemDiv.appendChild(basketballImage);
-    }
-
-    else if (item.interestname.toLowerCase() === "guitar") {
-      const basketballImage = document.createElement("img");
-      basketballImage.src = "/public/noun-guitar-6652436.png"; // Provide the correct path
-      basketballImage.alt = "guitar";
-      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
-      basketballImage.style.margin = "auto";
-      itemDiv.appendChild(basketballImage);
-    }
-
-    else if (item.interestname.toLowerCase() === "food") {
-      const basketballImage = document.createElement("img");
-      basketballImage.src = "/public/noun-pizza-6669822.png"; // Provide the correct path
-      basketballImage.alt = "food";
-      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
-      basketballImage.style.margin = "auto";
-      itemDiv.appendChild(basketballImage);
-    }
-
-    else if (item.interestname.toLowerCase() === "running") {
-      const basketballImage = document.createElement("img");
-      basketballImage.src = "/public/noun-running-20027.png"; // Provide the correct path
-      basketballImage.alt = "running";
-      basketballImage.style.maxHeight = "10%"; // Adjust styling if necessary
-      basketballImage.style.margin = "auto";
-      itemDiv.appendChild(basketballImage);
-    }
-
-    
-
-
+    user.interests.forEach(interest => {
+          createInterestImage(user, interest, itemDiv);
+        });
 
     clothesContainer.appendChild(itemDiv);
   });
+}
+
+
+
+function displayRequestedFriends(data) {
+  // Display users
+  const clothesContainer = document.getElementById("requestedFriends")
+  clothesContainer.innerHTML = "";
+
+  // Group users by user ID
+  const usersMap = new Map();
+  data.forEach(item => {
+    if (!usersMap.has(item.userid)) {
+      
+      // Initialize user entry if it doesn't exist
+      usersMap.set(item.userid, {
+        id: item.userid,
+        username: item.username,
+        uage: item.uage,
+        gender: item.gender,
+        ulocation: item.ulocation,
+        profilepicture: item.profilepicture,
+        interests: [] // Initialize interests array for the user
+      });
+    }
+    // Add interest to user's interests array
+    usersMap.get(item.userid).interests.push(item.interestname);
+  });
+
+  // Iterate over grouped users and create containers
+  usersMap.forEach(user => {
+    const itemDiv = document.createElement("div");
+    itemDiv.classList.add("clothes-item");
+
+    const titleElement = document.createElement("h3");
+    titleElement.textContent = user.username;
+
+    const ageElement = document.createElement("p");
+    ageElement.textContent = "Age: " + user.uage;
+
+    const genderElement = document.createElement("p");
+    genderElement.textContent = "Gender: " + user.gender;
+
+    const locationElement = document.createElement("p");
+    locationElement.textContent = "From: " + user.ulocation;
+
+    const interestsElement = document.createElement("p");
+    interestsElement.textContent = "Interests: " + user.interests.join(", ");
+
+    const imageElement = document.createElement("img");
+    imageElement.src = user.profilepicture || "path_to_default_image";
+    imageElement.alt = user.username;
+
+    
+
+    itemDiv.appendChild(titleElement);
+    itemDiv.appendChild(ageElement);
+    itemDiv.appendChild(genderElement);
+    itemDiv.appendChild(locationElement);
+    itemDiv.appendChild(interestsElement);
+    itemDiv.appendChild(imageElement);
+
+    
+    const addButton = document.createElement("button");
+      addButton.textContent = "Add";
+      addButton.classList.add("ms-2"); // Add the ms-2 class for left margin
+      
+      addButton.addEventListener("click", () => updateFriendStatus(user.id));
+      itemDiv.appendChild(addButton);
+
+
+    user.interests.forEach(interest => {
+          createInterestImage(user, interest, itemDiv);
+        });
+
+    clothesContainer.appendChild(itemDiv);
+  });
+
+  function updateFriendStatus(friendId) {
+    
+    fetch("/update-friend-status", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({friendId: friendId})
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Friend request accepted successfully");
+            // Refresh the list of requested friends
+            fetchUserProfile();
+            fetchRequests();
+        } else {
+            console.error("Failed to accept friend request");
+        }
+    })
+    .catch(error => console.error("Error accepting friend request:", error));
+}
+
+}
+
+function createInterestImage(user, interest, container) {
+    // Check if the container already contains an image with the same interest
+    if (container.querySelector(`img[alt="${interest}"]`)) {
+        return; // If an image with the same interest exists, return without adding a new one
+    }
+
+    // Create image element based on the interest
+    const image = document.createElement("img");
+    image.alt = interest;
+    image.style.maxHeight = "10%"; // Adjust styling if necessary
+    image.style.marginRight = "5px"; // Adjust styling if necessary
+
+    // Set the source of the image based on the interest
+    switch(interest) {
+        case 'Basketball':
+            image.src = "/public/noun-basketball-6548861.png";
+            break;
+        case 'Food':
+            image.src = "/public/noun-pizza-6669822.png";
+            break;
+        case 'TV':
+            image.src = "/public/noun-tv-1004016.png";
+            break;
+        case 'Guitar':
+            image.src = "/public/noun-guitar-6652436.png";
+            break;
+        case 'Running':
+            image.src = "/public/noun-running-20027.png";
+            break;
+        case 'Taekwondo':
+            image.src = "/public/noun-martial-arts-6118456.png";
+            break;
+        case 'Movies':
+            image.src = "/public/noun-movie-6682539.png";
+            break;
+        case 'Bodhran':
+            image.src = "/public/noun-bodhran-drum-5515941.png";
+            break;
+        // Add cases for other interests here
+        default:
+            // Handle default case or unknown interests
+            break;
+    }
+
+    // Append the image to the container
+    container.appendChild(image);
 }
 
   </script>

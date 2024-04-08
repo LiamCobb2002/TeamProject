@@ -135,6 +135,30 @@ function startServer() {
         }
     });
 
+    app.get("/requests", authenticateUser, async function (req, res) {
+        try {
+            const client = await pool.connect();
+            const result = await client.query(
+                `SELECT profilepicture, gender, username, uage, interestname, ulocation, userid  
+                FROM userprofile 
+                JOIN UserInterest USING (userid) 
+                JOIN interest USING (interestid) 
+                JOIN userlogin USING (userid) 
+                JOIN Friendship ON (userprofile.userid = Friendship.user1id OR userprofile.userid = Friendship.user2id)
+                WHERE (Friendship.user1id = userprofile.userid OR Friendship.user2id = userprofile.userid)
+                AND Friendship.status = 'Pending' 
+                AND (Friendship.user2id = $1)
+                AND userprofile.userid != $1;`,
+                [req.session.userid]
+            );
+            const users = result.rows;
+            client.release();
+            res.send(users);
+        } catch (err) {
+            console.error("Error fetching users data:", err);
+            res.status(500).send(err);
+        }
+    });
 
     app.get("/signup", async function (req, res) {
         try {
@@ -205,20 +229,59 @@ function startServer() {
 
     app.post("/add-friend", authenticateUser, async function (req, res) {
         try {
-          const { friendId } = req.body;
-          const client = await pool.connect();
-          // Insert a new friendship record
-          const result = await client.query(
-            "INSERT INTO Friendship (User1ID, User2ID, Status) VALUES ($1, $2, $3)",
-            [req.session.userid, friendId, 'Pending']
-          );
-          client.release();
-          res.sendStatus(200); // Send success response
+            const { friendId } = req.body;
+            console.log("Adding friend with ID:", friendId); // Log friendId for debugging
+            const client = await pool.connect();
+            // Insert a new friendship record
+            const result = await client.query(
+                "INSERT INTO Friendship (User1ID, User2ID, Status) VALUES ($1, $2, $3)",
+                [req.session.userid, friendId, 'Pending']
+            );
+            client.release();
+            console.log("Friend added successfully."); // Log success message
+            res.sendStatus(200); // Send success response
         } catch (err) {
-          console.error("Error adding friend:", err);
-          res.status(500).send("Internal Server Error");
+            console.error("Error adding friend:", err);
+            res.status(500).send("Internal Server Error");
         }
-      });
+    });
+
+    app.post("/update-friend-status", authenticateUser, async function (req, res) {
+        try {
+            const { friendId } = req.body;
+            console.log("Friend ID:", friendId); // Print friendId for debugging
+            console.log("userid", req.session.userid)
+    
+            // Update the friendship status in the database
+            const client = await pool.connect();
+            const result = await client.query(
+                `UPDATE Friendship 
+                 SET Status = 'Accepted'
+                 WHERE (User1ID = $1 AND User2ID = $2)`,
+                [friendId, req.session.userid]
+            );
+            client.release();
+    
+            // Check if any rows were affected by the update
+            console.log("Number of rows updated:", result.rowCount); // Print number of rows updated
+            if (result.rowCount > 0) {
+                res.status(200).json({ success: true, message: "Friend request status updated successfully." });
+            } else {
+                // Log error to the database if the update didn't affect any rows
+                
+                res.status(404).json({ success: false, message: "Friend request not found." });
+            }
+        } catch (err) {
+            console.error("Error updating friend request status:", err);
+            // Log error to the database
+            
+            
+        }
+    });
+    
+    
+    
+    
 
         // Update user profile route
         app.post("/update-profile", authenticateUser, async function (req, res) {
@@ -271,6 +334,40 @@ function startServer() {
             }
         });
         
+        app.post("/add-interest", authenticateUser, async function (req, res) {
+            try {
+              const { interestName } = req.body;
+          
+              // Query the database to find the interest ID based on the interest name
+              const client = await pool.connect();
+              const interestResult = await client.query(
+                "SELECT interestid FROM interest WHERE interestname = $1",
+                [interestName]
+              );
+          
+              if (interestResult.rows.length > 0) {
+                const interestID = interestResult.rows[0].interestid;
+          
+                // Insert the interest into the UserInterest table
+                await client.query(
+                  "INSERT INTO userinterest (userid, interestid) VALUES ($1, $2)",
+                  [req.session.userid, interestID]
+                );
+          
+                client.release();
+                res.json({ success: true });
+              } else {
+                // If the interest does not exist, return failure
+                client.release();
+                res.json({ success: false, message: "Interest not found." });
+              }
+            } catch (err) {
+              console.error("Error adding interest:", err);
+              res.status(500).send("Internal Server Error");
+            }
+          });
+          
+          
     
     
 
