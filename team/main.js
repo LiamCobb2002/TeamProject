@@ -114,7 +114,7 @@ function startServer() {
         try {
             const client = await pool.connect();
             const result = await client.query(
-                `SELECT profilepicture, gender, username, uage, interestname, ulocation 
+                `SELECT profilepicture, gender, username, uage, interestname, ulocation, userid
                 FROM userprofile 
                 JOIN UserInterest USING (userid) 
                 JOIN interest USING (interestid) 
