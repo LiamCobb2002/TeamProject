@@ -174,6 +174,7 @@
     if (!usersMap.has(item.userid)) {
       // Initialize user entry if it doesn't exist
       usersMap.set(item.userid, {
+        id: item.userid,
         username: item.username,
         uage: item.uage,
         gender: item.gender,
@@ -217,12 +218,44 @@
     itemDiv.appendChild(interestsElement);
     itemDiv.appendChild(imageElement);
 
+    const addButton = document.createElement("button");
+      addButton.textContent = "Block";
+      addButton.classList.add("ms-2"); // Add the ms-2 class for left margin
+      
+      addButton.addEventListener("click", () => blockFriendStatus(user.id));
+      itemDiv.appendChild(addButton);
+
     user.interests.forEach(interest => {
           createInterestImage(user, interest, itemDiv);
         });
 
     clothesContainer.appendChild(itemDiv);
   });
+
+  function blockFriendStatus(friendId) {
+    
+    fetch("/block-friend-status", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({friendId: friendId})
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Friend request accepted successfully");
+            // Refresh the list of requested friends
+            alert("This user has been blocked");
+            fetchUserProfile();
+            fetchRequests();
+        } else {
+            console.error("Failed to accept friend request");
+        }
+    })
+    .catch(error => console.error("Error accepting friend request:", error));
+}
+
+  
 }
 
 
