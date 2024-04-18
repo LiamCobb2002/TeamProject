@@ -371,9 +371,9 @@ function startServer() {
     
     
 
-    //listen on port 8081 for Express
-    app.listen(8081, function () {
-        console.log("Server is running on port 8081");
+    //listen on port 8080 for Express
+    app.listen(8080, function () {
+        console.log("Server is running on port 8080");
     });
 
     
