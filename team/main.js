@@ -56,7 +56,7 @@ function startServer() {
     });
 
     app.get("/SignUp", function (req, res) {
-        res.sendFile(path.join(__dirname, "SignUp.html"));
+        res.sendFile(path.join(__dirname, "signup.html"));
       });
 
     app.get("/login", function (req, res) {
