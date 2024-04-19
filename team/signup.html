@@ -167,12 +167,16 @@
       location
     }), // Include age, gender, and location in the payload
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
+  .then(response => {
+    if (response.ok) {
       alert('Registration successful! You can now log in.');
       document.getElementById('register').style.display = 'none';
       window.location.href = "/login";
+    } else if (response.status === 400) {
+      // Handle username already taken
+      response.json().then(data => {
+        alert(data.message);
+      });
     } else {
       alert('Registration failed. Please try again.');
     }
@@ -181,8 +185,7 @@
     console.error('Error:', error);
     alert('Error occurred during registration.');
   });
-}
-
+    }
 
     function fetchUserProfile() {
       // Fetch clothes data

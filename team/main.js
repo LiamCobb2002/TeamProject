@@ -63,7 +63,7 @@ function startServer() {
         res.sendFile(path.join(__dirname, "login.html"));
       });
 
-    app.get("/my-profile", function (req, res) {
+    app.get("/my-profile", authenticateUser, function (req, res) {
         res.sendFile(path.join(__dirname, "my-profile.html"));
       });
 
@@ -160,18 +160,42 @@ function startServer() {
         }
     });
 
-    app.get("/signup", async function (req, res) {
+    app.post("/register", async function (req, res) {
         try {
+            const { username, email, pwd, age, gender, location } = req.body; // Extract username, email, password, age, gender, and location from the request body
             const client = await pool.connect();
-            const result = await client.query("select userid, username, email, pwd from userlogin");
-            const Users = result.rows;
-            client.release();
-            res.send(Users);
+            
+            // Check if the username already exists in the database
+            const usernameCheck = await client.query(
+                "SELECT * FROM userlogin WHERE username = $1",
+                [username]
+            );
+    
+            if (usernameCheck.rows.length > 0) {
+                // If the username already exists, send a response indicating failure
+                res.status(400).json({ success: false, message: "Username already exists. Please choose a different username." });
+            } else {
+                // If the username is unique, insert user information into the userlogin table
+                const result = await client.query(
+                    "INSERT INTO userlogin(username, email, pwd) VALUES ($1, $2, $3) RETURNING *",
+                    [username, email, pwd]
+                );
+    
+                // Insert additional user information into the userprofile table
+                await client.query(
+                    "INSERT INTO userprofile(userid, uage, gender, ulocation) VALUES ($1, $2, $3, $4)",
+                    [result.rows[0].userid, age, gender, location]
+                );
+                
+                client.release();
+                res.status(200).json({ success: true }); // Send success response
+            }
         } catch (err) {
-            console.error("Error fetching users data:", err);
-            res.status(500).send(err);
+            console.error("Error adding new User:", err);
+            res.status(500).send("Internal Server Error");
         }
     });
+    
 
     app.post("/register", async function (req, res) {
         try {
@@ -258,6 +282,39 @@ function startServer() {
                 `UPDATE Friendship 
                  SET Status = 'Accepted'
                  WHERE (User1ID = $1 AND User2ID = $2)`,
+                [friendId, req.session.userid]
+            );
+            client.release();
+    
+            // Check if any rows were affected by the update
+            console.log("Number of rows updated:", result.rowCount); // Print number of rows updated
+            if (result.rowCount > 0) {
+                res.status(200).json({ success: true, message: "Friend request status updated successfully." });
+            } else {
+                // Log error to the database if the update didn't affect any rows
+                
+                res.status(404).json({ success: false, message: "Friend request not found." });
+            }
+        } catch (err) {
+            console.error("Error updating friend request status:", err);
+            // Log error to the database
+            
+            
+        }
+    });
+
+    app.post("/block-friend-status", authenticateUser, async function (req, res) {
+        try {
+            const { friendId } = req.body;
+            console.log("Friend ID:", friendId); // Print friendId for debugging
+            console.log("userid", req.session.userid)
+    
+            // Update the friendship status in the database
+            const client = await pool.connect();
+            const result = await client.query(
+                `UPDATE Friendship 
+                 SET Status = 'Blocked'
+                 WHERE (User1ID = $1 AND User2ID = $2) or (User2ID = $1 AND User1ID = $2)`,
                 [friendId, req.session.userid]
             );
             client.release();
