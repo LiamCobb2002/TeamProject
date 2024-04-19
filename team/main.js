@@ -8,11 +8,11 @@ var app = express();
 
 //PostgreSQL connection pool
 var pool = new Pool({
-    user: "BUILDER",
+    user: "node",
     host: "localhost",
-    database: "postgres",
-    password: "password",
-    port: 54321,
+    database: "sitedb",
+    password: "Sp00ky",
+    port: 5432,
 });
 
 //Set up session middleware
