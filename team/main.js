@@ -9,11 +9,11 @@ const multer = require('multer');
 
 //PostgreSQL connection pool
 var pool = new Pool({
-    user: "BUILDER",
+    user: "node",
     host: "localhost",
-    database: "postgres",
-    password: "password",
-    port: 54321,
+    database: "sitedb",
+    password: "Sp00ky",
+    port: 5432,
 });
 
 //Set up session middleware
@@ -60,7 +60,7 @@ function startServer() {
     });
 
     app.get("/SignUp", function (req, res) {
-        res.sendFile(path.join(__dirname, "SignUp.html"));
+        res.sendFile(path.join(__dirname, "signup.html"));
       });
 
     app.get("/login", function (req, res) {
@@ -479,9 +479,9 @@ app.post("/remove-all-interests", authenticateUser, async function(req, res) {
     
     
 
-    //listen on port 8081 for Express
-    app.listen(8081, function () {
-        console.log("Server is running on port 8081");
+    //listen on port 8080 for Express
+    app.listen(8080, function () {
+        console.log("Server is running on port 8080");
     });
 
     
