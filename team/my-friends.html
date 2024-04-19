@@ -139,8 +139,12 @@
     
   </div>
 
+
+
+
  
   <script>
+    
     
     
     function fetchUserProfile() {
@@ -178,6 +182,7 @@
         username: item.username,
         uage: item.uage,
         gender: item.gender,
+        email: item.email,
         ulocation: item.ulocation,
         profilepicture: item.profilepicture,
         interests: [] // Initialize interests array for the user
@@ -204,6 +209,9 @@
     const locationElement = document.createElement("p");
     locationElement.textContent = "From: " + user.ulocation;
 
+    const emailElement = document.createElement("p");
+    locationElement.textContent = "Email: " + user.email;
+
     const interestsElement = document.createElement("p");
     interestsElement.textContent = "Interests: " + user.interests.join(", ");
 
@@ -215,7 +223,8 @@
     itemDiv.appendChild(ageElement);
     itemDiv.appendChild(genderElement);
     itemDiv.appendChild(locationElement);
-    itemDiv.appendChild(interestsElement);
+    itemDiv.appendChild(emailElement);
+    
     itemDiv.appendChild(imageElement);
 
     const addButton = document.createElement("button");
