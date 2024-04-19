@@ -5,6 +5,7 @@ var session = require("express-session");
 var { Pool } = require("pg");
 var path = require("path");
 var app = express();
+const multer = require('multer');
 
 //PostgreSQL connection pool
 var pool = new Pool({
@@ -40,6 +41,9 @@ pool.connect()
 //Start the Express server
 function startServer() {
     //Parse JSON bodies for POST requests
+
+    app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+    
     app.use(bodyParser.json());
 
     //Serve the home file
@@ -114,7 +118,7 @@ function startServer() {
         try {
             const client = await pool.connect();
             const result = await client.query(
-                `SELECT profilepicture, gender, username, uage, interestname, ulocation, userid
+                `SELECT profilepicture, gender, username, uage, interestname, ulocation, userid, email
                 FROM userprofile 
                 JOIN UserInterest USING (userid) 
                 JOIN interest USING (interestid) 
@@ -223,6 +227,32 @@ function startServer() {
     });
     
 
+    const upload = multer({ dest: 'uploads/' }); // Specify the destination directory for uploaded files
+
+// ...
+
+// Update user profile picture route with multer middleware
+app.post('/upload-profile-picture', upload.single('profilePicture'), async function (req, res) {
+    try {
+        // Get the file path of the uploaded image
+        const imagePath = req.file.path;
+
+        // Update the profile picture path in the database
+        const client = await pool.connect();
+        await client.query(
+            'UPDATE UserProfile SET ProfilePicture = $1 WHERE UserID = $2',
+            [imagePath, req.session.userid]
+        );
+        client.release();
+
+        // Send a success response back to the client
+        res.status(200).json({ success: true, message: 'Profile picture uploaded successfully.', imagePath: imagePath });
+    } catch (err) {
+        console.error('Error uploading profile picture:', err);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+    
     app.post("/login", async function (req, res) {
         try {
             const { username, pwd } = req.body; // Extract username and password from the request body
@@ -424,6 +454,27 @@ function startServer() {
             }
           });
           
+          // Define route to handle removing all hobbies/interests
+app.post("/remove-all-interests", authenticateUser, async function(req, res) {
+    try {
+      // Query the database to remove all interests associated with the user
+      const client = await pool.connect();
+  
+      // Delete all entries from the UserInterest table where userid matches the current user's id
+      await client.query(
+        "DELETE FROM userinterest WHERE userid = $1",
+        [req.session.userid]
+      );
+  
+      client.release();
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error removing interests:", error);
+      res.status(500).json({ success: false, error: "Internal Server Error" });
+    }
+  });
+  
           
     
     

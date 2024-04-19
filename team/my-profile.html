@@ -176,6 +176,17 @@
     <button type="button" onclick="updateUser()">Update</button>
   </div>
 
+  <br>
+  <div class="mb-3">
+    <label for="profilePictureInput" class="form-label">Upload Profile Picture (Only images allowed)</label>
+    <input type="file" class="form-control" id="profilePictureInput" accept="image/*">
+    <div id="profilePicturePreview" class="mt-2"></div>
+  </div>
+  
+  <!-- Button to trigger upload -->
+  <button type="button" class="btn btn-primary" onclick="uploadProfilePicture()">Upload Picture</button>
+
+
   
   <!-- Container for displaying images horizontally -->
   <div class="hobbies-wrapper">
@@ -196,6 +207,30 @@
   <button onclick="removeAllHobbies()">Remove All Hobbies</button>
   
   <script>
+
+function uploadProfilePicture() {
+  const fileInput = document.getElementById('profilePictureInput');
+  const formData = new FormData();
+  formData.append('profilePicture', fileInput.files[0]); // Assuming single file upload
+
+  fetch('/upload-profile-picture', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert('Profile picture uploaded successfully!');
+      // Optionally, update UI to display the uploaded picture
+    } else {
+      alert('Failed to upload profile picture.');
+    }
+  })
+  .catch(error => {
+    console.error('Error uploading profile picture:', error);
+    alert('An error occurred while uploading the profile picture.');
+  });
+}
     async function updateUser() {
       const username = document.getElementById('registerUsername').value;
       const email = document.getElementById('registerEmail').value;
@@ -290,8 +325,7 @@
     const locationElement = document.createElement("p");
     locationElement.textContent = "From: " + user.ulocation;
 
-    const interestsElement = document.createElement("p");
-    interestsElement.textContent = "Interests: " + user.interests.join(", ");
+    
 
     const imageElement = document.createElement("img");
     imageElement.src = user.profilepicture || "path_to_default_image";
@@ -305,7 +339,7 @@
     itemDiv.appendChild(imageElement);
 
     // Conditionally add basketball image if 'basketball' is in interests
-    if (user.interests.includes('Basketball')) {
+    if (user.interests.includes('')) {
       const basketballImage = document.createElement("img");
       basketballImage.src = "/public/noun-basketball-6548861.png";
       basketballImage.alt = "Basketball";
@@ -377,6 +411,9 @@
       itemDiv.appendChild(basketballImage);
     }
 
+    
+    
+
     clothesContainer.appendChild(itemDiv);
   });
 }
@@ -409,6 +446,32 @@ async function addInterest(interestName) {
     alert('Error adding interest. Please try again.');
   }
 }
+
+function removeAllHobbies() {
+  if (confirm('Are you sure you want to remove all hobbies?')) {
+    fetch("/remove-all-interests", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('All hobbies removed successfully!');
+        // Optionally, update UI or perform other actions
+        fetchUserProfile(); // Fetch updated user profile data
+      } else {
+        alert('Failed to remove hobbies. Please try again.');
+      }
+    })
+    .catch(error => {
+      console.error('Error removing hobbies:', error);
+      alert('Error removing hobbies. Please try again.');
+    });
+  }
+}
+
 
 
 
