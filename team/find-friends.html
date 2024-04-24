@@ -41,6 +41,10 @@
       margin: 2%;
     }
 
+    .clothes-item p{
+    font-size: 180%; /* Adjust the font size here */
+  }
+
     .profile-container img,
     .find-friends-container img,
     .my-friends-container img,
@@ -297,27 +301,35 @@ function createInterestImage(user, interest, container) {
     switch(interest) {
         case 'Basketball':
             image.src = "/public/noun-basketball-6548861.png";
+            container.appendChild(image);
             break;
         case 'Food':
             image.src = "/public/noun-pizza-6669822.png";
+            container.appendChild(image);
             break;
         case 'TV':
             image.src = "/public/noun-tv-1004016.png";
+            container.appendChild(image);
             break;
         case 'Guitar':
             image.src = "/public/noun-guitar-6652436.png";
+            container.appendChild(image);
             break;
         case 'Running':
             image.src = "/public/noun-running-20027.png";
+            container.appendChild(image);
             break;
         case 'Taekwondo':
             image.src = "/public/noun-martial-arts-6118456.png";
+            container.appendChild(image);
             break;
         case 'Movies':
             image.src = "/public/noun-movie-6682539.png";
+            container.appendChild(image);
             break;
         case 'Bodhran':
             image.src = "/public/noun-bodhran-drum-5515941.png";
+            container.appendChild(image);
             break;
         // Add cases for other interests here
         default:
@@ -326,7 +338,7 @@ function createInterestImage(user, interest, container) {
     }
 
     // Append the image to the container
-    container.appendChild(image);
+    
 }
 function addInterest(interest) {
   // Clear the selectedHobbies array
