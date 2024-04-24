@@ -93,8 +93,8 @@ function startServer() {
             const result = await client.query(
                 `SELECT profilepicture, gender, username, uage, interestname, ulocation, userid 
                 FROM userprofile 
-                JOIN UserInterest USING (userid) 
-                JOIN interest USING (interestid) 
+                left JOIN UserInterest USING (userid) 
+                left JOIN interest USING (interestid) 
                 JOIN userlogin USING (userid) 
                 WHERE userlogin.userid != $1
                 AND NOT EXISTS (
@@ -120,8 +120,8 @@ function startServer() {
             const result = await client.query(
                 `SELECT profilepicture, gender, username, uage, interestname, ulocation, userid, email
                 FROM userprofile 
-                JOIN UserInterest USING (userid) 
-                JOIN interest USING (interestid) 
+                left JOIN UserInterest USING (userid) 
+                left JOIN interest USING (interestid) 
                 JOIN userlogin USING (userid) 
                 JOIN Friendship ON (userprofile.userid = Friendship.user1id OR userprofile.userid = Friendship.user2id)
                 WHERE (Friendship.user1id = userprofile.userid OR Friendship.user2id = userprofile.userid)
@@ -145,8 +145,8 @@ function startServer() {
             const result = await client.query(
                 `SELECT profilepicture, gender, username, uage, interestname, ulocation, userid  
                 FROM userprofile 
-                JOIN UserInterest USING (userid) 
-                JOIN interest USING (interestid) 
+                left JOIN UserInterest USING (userid) 
+                left JOIN interest USING (interestid) 
                 JOIN userlogin USING (userid) 
                 JOIN Friendship ON (userprofile.userid = Friendship.user1id OR userprofile.userid = Friendship.user2id)
                 WHERE (Friendship.user1id = userprofile.userid OR Friendship.user2id = userprofile.userid)
@@ -406,8 +406,8 @@ app.post('/upload-profile-picture', upload.single('profilePicture'), async funct
                 const result = await client.query(
                     `SELECT profilepicture, gender, username, uage, interestname, ulocation 
                     FROM userprofile 
-                    JOIN UserInterest USING (userid) 
-                    JOIN interest USING (interestid) 
+                    left JOIN UserInterest USING (userid) 
+                    left JOIN interest USING (interestid) 
                     JOIN userlogin USING (userid) 
                     WHERE userprofile.userid = $1;`,
                     [req.session.userid]
