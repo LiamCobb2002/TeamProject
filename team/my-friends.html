@@ -110,6 +110,10 @@
   height: auto;
 }
 
+.clothes-item p, .clothes-item a {
+    font-size: 180%; /* Adjust the font size here */
+  }
+
   </style>
 </head>
 <body onLoad="fetchUserProfile(); fetchRequests();">
@@ -144,7 +148,29 @@
 
  
   <script>
-    
+    function uploadProfilePicture() {
+  const fileInput = document.getElementById('profilePictureInput');
+  const formData = new FormData();
+  formData.append('profilePicture', fileInput.files[0]); // Assuming single file upload
+
+  fetch('/upload-profile-picture', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert('Profile picture uploaded successfully!');
+      // Optionally, update UI to display the uploaded picture
+    } else {
+      alert('Failed to upload profile picture.');
+    }
+  })
+  .catch(error => {
+    console.error('Error uploading profile picture:', error);
+    alert('An error occurred while uploading the profile picture.');
+  });
+}
     
     
     function fetchUserProfile() {
@@ -209,8 +235,12 @@
     const locationElement = document.createElement("p");
     locationElement.textContent = "From: " + user.ulocation;
 
-    const emailElement = document.createElement("p");
-    locationElement.textContent = "Email: " + user.email;
+    const emailLink = document.createElement("a");
+    emailLink.textContent = user.email;
+    emailLink.href = "mailto:" + user.email; // Use mailto protocol to open email client
+    emailLink.style.display = "block"; // Display as block for better spacing
+    emailLink.style.marginTop = "5px"; // Add top margin for separation
+    emailLink.style.textDecoration = "none"; // Remove underline
 
     const interestsElement = document.createElement("p");
     interestsElement.textContent = "Interests: " + user.interests.join(", ");
@@ -223,7 +253,7 @@
     itemDiv.appendChild(ageElement);
     itemDiv.appendChild(genderElement);
     itemDiv.appendChild(locationElement);
-    itemDiv.appendChild(emailElement);
+    itemDiv.appendChild(emailLink);
     
     itemDiv.appendChild(imageElement);
 
@@ -383,27 +413,35 @@ function createInterestImage(user, interest, container) {
     switch(interest) {
         case 'Basketball':
             image.src = "/public/noun-basketball-6548861.png";
+            container.appendChild(image);
             break;
         case 'Food':
             image.src = "/public/noun-pizza-6669822.png";
+            container.appendChild(image);
             break;
         case 'TV':
             image.src = "/public/noun-tv-1004016.png";
+            container.appendChild(image);
             break;
         case 'Guitar':
             image.src = "/public/noun-guitar-6652436.png";
+            container.appendChild(image);
             break;
         case 'Running':
             image.src = "/public/noun-running-20027.png";
+            container.appendChild(image);
             break;
         case 'Taekwondo':
             image.src = "/public/noun-martial-arts-6118456.png";
+            container.appendChild(image);
             break;
         case 'Movies':
             image.src = "/public/noun-movie-6682539.png";
+            container.appendChild(image);
             break;
         case 'Bodhran':
             image.src = "/public/noun-bodhran-drum-5515941.png";
+            container.appendChild(image);
             break;
         // Add cases for other interests here
         default:
@@ -412,7 +450,7 @@ function createInterestImage(user, interest, container) {
     }
 
     // Append the image to the container
-    container.appendChild(image);
+    
 }
 
   </script>
