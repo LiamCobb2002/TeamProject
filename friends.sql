@@ -74,10 +74,10 @@ INSERT INTO Interest (InterestName, InterestIcon) VALUES
 ('Basketball', 'music_icon.png'),
 ('Running', 'reading_icon.png'),
 ('TV', 'travel_icon.png'),
-('Guitar', 'food_icon.png')
-('Food', 'food_icon.png')
-('Bodhran', 'bodhran_icon.png')
-('Taekwondo', 'taek_icon.png')
+('Guitar', 'food_icon.png'), 
+('Food', 'food_icon.png'),
+('Bodhran', 'bodhran_icon.png'),
+('Taekwondo', 'taek_icon.png'),
 ('Movies', 'mov_icon.png');
 
 -- Sample data for UserInterest Table
