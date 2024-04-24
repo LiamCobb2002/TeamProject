@@ -31,6 +31,10 @@
       max-width: 20%;
     }
 
+    .clothes-item p{
+    font-size: 180%; /* Adjust the font size here */
+  }
+
     .profile-container {
       width: 50%;
       text-align: center;
@@ -136,7 +140,7 @@
   </style>
 </head>
 
-<body onload="fetchUserProfile()">
+<body onload="fetchUserProfile(); fetchUserInfo()">
   <div class="banner">
     <a href="/login" class="banner-link">Login</a>
     <a href="/signup" class="banner-link">Sign Up</a>
@@ -221,6 +225,7 @@ function uploadProfilePicture() {
   .then(data => {
     if (data.success) {
       alert('Profile picture uploaded successfully!');
+      fetchUserProfile();
       // Optionally, update UI to display the uploaded picture
     } else {
       alert('Failed to upload profile picture.');
@@ -264,7 +269,8 @@ function uploadProfilePicture() {
 
         if (data.success) {
           alert('Profile updated successfully!');
-          // Optionally, redirect the user to another page or update UI
+          fetchUserProfile(); 
+          fetchUserInfo()
         } else {
           alert('Failed to update profile. Please try again.');
         }
@@ -284,6 +290,30 @@ function uploadProfilePicture() {
         })
         .catch(error => console.error('Error fetching clothes data:', error));
     }
+
+    function fetchUserInfo() {
+  // Fetch user profile data
+  fetch("/user-profile")
+    .then(response => response.json())
+    .then(data => {
+      // Check if there's user data
+      if (data.length > 0) {
+        const userData = data[0]; // Assuming only one user's data is fetched
+        // Populate form fields with user data
+        document.getElementById('registerUsername').value = userData.username;
+        document.getElementById('registerEmail').value = userData.email;
+        // Populate other fields accordingly (age, gender, location)
+        document.getElementById('registerAge').value = userData.uage;
+        document.getElementById('registerGender').value = userData.gender;
+        document.getElementById('registerLocation').value = userData.ulocation;
+        
+      } else {
+        console.error('No user data found.');
+      }
+    })
+    .catch(error => console.error('Error fetching user profile data:', error));
+}
+
 
     function displayUsers(data) {
   // Display users
